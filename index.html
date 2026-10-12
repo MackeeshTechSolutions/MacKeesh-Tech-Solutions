@@ -206,10 +206,10 @@
   @keyframes marquee{to{transform:translateX(-50%);}}
   @keyframes pop{from{opacity:0;transform:scale(.3);}to{opacity:1;transform:scale(1);}}
 
+  /* Gentle effects stay on even if the device says "reduce motion" (many laptops default to it);
+     only the constant background drifting is switched off. */
   @media (prefers-reduced-motion:reduce){
-    html{scroll-behavior:auto;}
-    *,*::before,*::after{animation:none !important;transition:none !important;}
-    .js .reveal{opacity:1;transform:none;}
+    .orb,.ticker-track{animation:none !important;}
   }
 </style>
 </head>
@@ -504,7 +504,7 @@
 
 <script>
 (function(){
-  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var reduce = false;
   var canHover = window.matchMedia('(hover: hover)').matches;
   var root = document.documentElement;
 
