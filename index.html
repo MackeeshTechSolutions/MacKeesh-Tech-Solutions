@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="en">
 <head>
+<meta http-equiv="Cache-Control" content="no-cache, must-revalidate">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#020814">
@@ -111,6 +112,8 @@
   #services .inner{padding:clamp(40px,7vw,64px) 0 clamp(48px,9vw,88px);}
   .sec-head{max-width:620px;margin-bottom:38px;}
   .tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px;}
+  @media (min-width:960px){.tiles{grid-template-columns:repeat(3,1fr);gap:22px;}.tile{height:230px;}}
+  @media (min-width:1500px){.inner{max-width:1360px;}}
   .tile{perspective:1100px;height:210px;outline:none;cursor:pointer;-webkit-tap-highlight-color:transparent;}
   .tile-inner{position:relative;width:100%;height:100%;transition:transform .85s cubic-bezier(.4,.2,.2,1);transform-style:preserve-3d;}
   .tile.flipped .tile-inner{transform:rotateY(180deg);}
@@ -492,7 +495,7 @@
         <img src="logo.png" alt="">
         <span>MacKeesh Tech Solutions · Johannesburg, South Africa</span>
       </div>
-      <span class="foot-note">Pricing in ZAR · Payment due within 7 days of invoice</span>
+      <span class="foot-note">Pricing in ZAR · Payment due within 7 days of invoice · v3</span>
     </div>
   </footer>
 
