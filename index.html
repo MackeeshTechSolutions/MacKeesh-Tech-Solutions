@@ -8,286 +8,658 @@
 <meta name="description" content="MacKeesh Tech Solutions — independent IT support in Johannesburg, South Africa. Windows & Office activation, laptop assessments, hardware repair, software installs, virus removal.">
 <link rel="icon" href="logo.png">
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<script>document.documentElement.classList.add('js');</script>
 <style>
   :root{
     --bg:#020814;--surface:#081423;--surface2:#0d1a2c;--surface3:#13253a;
     --border:#0f3d5b;--border2:#145a84;
     --teal:#05d7ff;--teal-dim:#03b7d9;--teal-bg:rgba(5,215,255,0.10);
-    --amber:#ffb23f;--blue:#4f9cf9;
+    --blue:#4f9cf9;
     --text:#eaf7ff;--text2:#8ca9c0;--text3:#5d7890;
     --mono:'IBM Plex Mono',monospace;--sans:'IBM Plex Sans',sans-serif;
+    --gutter:clamp(16px,5vw,28px);
   }
   *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;scroll-padding-top:var(--navh,88px);}
   body{margin:0;background:var(--bg);color:var(--text);font-family:var(--sans);-webkit-text-size-adjust:100%;overflow-x:hidden;}
   a{color:var(--teal);text-decoration:none;}
   a:hover{color:var(--teal-dim);}
   ::selection{background:rgba(5,215,255,.28);}
   img{max-width:100%;}
+
+  .page{width:100%;min-width:0;background:radial-gradient(1100px 600px at 85% -10%, rgba(5,215,255,0.10), transparent 60%), linear-gradient(180deg,#03101f 0%,#010813 60%,#020814 100%);display:flex;flex-direction:column;align-items:stretch;}
+  .wrap{display:flex;justify-content:center;padding:0 var(--gutter);}
+  .inner{width:100%;max-width:1240px;}
+  .eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:2px;color:var(--teal);text-transform:uppercase;margin-bottom:10px;}
+  .sec-title{margin:0 0 10px;font-size:clamp(24px,6.5vw,32px);font-weight:800;color:#f4f8ff;}
+  .sec-sub{margin:0;font-size:15px;color:var(--text2);line-height:1.6;}
+
+  /* progress bar + nav */
+  .progress{position:fixed;top:0;left:0;right:0;height:3px;z-index:60;background:linear-gradient(90deg,var(--teal),var(--blue));transform-origin:0 50%;transform:scaleX(0);pointer-events:none;}
+  .nav{position:sticky;top:0;z-index:50;display:flex;justify-content:center;background:rgba(4,12,22,0.78);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid rgba(5,215,255,0.14);transition:background .3s, box-shadow .3s;}
+  .nav.scrolled{background:rgba(3,10,19,0.94);box-shadow:0 8px 30px rgba(0,0,0,.45);}
+  .nav-in{width:100%;max-width:1240px;padding:14px var(--gutter);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px;}
+  .brand{display:flex;align-items:center;gap:10px;color:inherit;}
+  .brand img{width:34px;height:34px;object-fit:contain;transition:transform .5s cubic-bezier(.3,1.6,.5,1);}
+  .brand:hover img{transform:rotate(-8deg) scale(1.12);}
+  .brand-txt{display:flex;flex-direction:column;line-height:1.1;}
+  .brand-name{font-weight:800;font-size:16px;color:#f4f8ff;letter-spacing:-0.2px;}
+  .brand-sub{font-size:9px;font-weight:600;color:var(--teal);letter-spacing:2px;text-transform:uppercase;}
+  .links{display:flex;align-items:center;gap:clamp(14px,4vw,26px);flex-wrap:wrap;}
+  .links a.nl{position:relative;font-size:13px;color:var(--text2);font-weight:500;padding:4px 0;transition:color .2s;}
+  .links a.nl::after{content:"";position:absolute;left:0;right:0;bottom:-2px;height:2px;border-radius:2px;background:var(--teal);transform:scaleX(0);transform-origin:0 50%;transition:transform .3s ease;}
+  .links a.nl:hover,.links a.nl.active{color:var(--teal);}
+  .links a.nl:hover::after,.links a.nl.active::after{transform:scaleX(1);}
+
+  /* buttons */
+  .btn{position:relative;overflow:hidden;display:inline-flex;align-items:center;gap:8px;padding:13px 22px;border-radius:11px;font-weight:600;font-size:14px;transition:transform .2s ease, box-shadow .2s ease, background .2s;}
+  .btn:hover{transform:translateY(-2px);}
+  .btn-primary{background:var(--teal);color:#031019;font-weight:700;}
+  .btn-primary:hover{color:#031019;background:#37e0ff;box-shadow:0 10px 30px rgba(5,215,255,.35);}
+  .btn-primary::after{content:"";position:absolute;top:0;left:-60%;width:40%;height:100%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.55),transparent);transform:skewX(-20deg);animation:shine 4.8s ease-in-out infinite;}
+  .btn-ghost{background:var(--surface2);border:1px solid var(--border2);color:var(--text);}
+  .btn-ghost:hover{color:var(--text);border-color:var(--teal);box-shadow:0 10px 30px rgba(5,215,255,.15);}
+  .btn-quote{padding:9px 16px;border-radius:9px;font-size:13px;}
+
+  /* hero */
+  .hero{position:relative;overflow:hidden;}
+  .orb{position:absolute;border-radius:50%;filter:blur(60px);pointer-events:none;}
+  .orb.o1{width:clamp(220px,40vw,420px);height:clamp(220px,40vw,420px);background:rgba(5,215,255,.22);top:-90px;right:4%;animation:float1 14s ease-in-out infinite alternate;}
+  .orb.o2{width:clamp(180px,32vw,320px);height:clamp(180px,32vw,320px);background:rgba(79,156,249,.18);bottom:-70px;left:-50px;animation:float2 18s ease-in-out infinite alternate;}
+  .hero-in{position:relative;z-index:1;display:flex;flex-wrap:wrap;align-items:center;gap:48px;padding:clamp(48px,10vw,88px) 0 clamp(40px,8vw,72px);}
+  .hero-text{flex:999 1 460px;min-width:0;display:flex;flex-direction:column;gap:22px;}
+  .hero-text>*{animation:fadeUp .8s cubic-bezier(.2,.7,.2,1) both;}
+  .hero-text>*:nth-child(1){animation-delay:.05s}
+  .hero-text>*:nth-child(2){animation-delay:.15s}
+  .hero-text>*:nth-child(3){animation-delay:.25s}
+  .hero-text>*:nth-child(4){animation-delay:.35s}
+  .hero-text>*:nth-child(5){animation-delay:.45s}
+  .badge{display:inline-flex;align-items:center;gap:8px;align-self:flex-start;padding:6px 12px;border-radius:20px;background:var(--teal-bg);border:1px solid rgba(5,215,255,0.32);}
+  .pulse{position:relative;width:6px;height:6px;border-radius:50%;background:var(--teal);flex-shrink:0;}
+  .pulse::after{content:"";position:absolute;inset:-4px;border-radius:50%;border:2px solid var(--teal);opacity:.7;animation:ring 1.8s ease-out infinite;}
+  .badge span.t{font-family:var(--mono);font-size:11px;letter-spacing:1px;color:var(--teal);text-transform:uppercase;}
+  h1.hero-h{margin:0;font-size:clamp(32px,8.5vw,52px);line-height:1.1;font-weight:800;color:#f6fbff;letter-spacing:-1px;}
+  .rot{display:inline-block;color:var(--teal);transition:opacity .35s ease, transform .35s ease;text-shadow:0 0 28px rgba(5,215,255,.45);}
+  .rot.out{opacity:0;transform:translateY(-10px);}
+  .rot.pre{opacity:0;transform:translateY(10px);transition:none;}
+  .lead{margin:0;font-size:clamp(15px,4.2vw,17px);line-height:1.65;color:var(--text2);max-width:520px;}
+  .cta-row{display:flex;gap:12px;flex-wrap:wrap;margin-top:4px;}
+  .stats{display:flex;gap:28px;flex-wrap:wrap;margin-top:18px;padding-top:22px;border-top:1px solid rgba(5,215,255,0.12);}
+  .stat-v{font-family:var(--mono);font-size:clamp(18px,5vw,22px);font-weight:600;color:var(--teal);}
+  .stat-l{font-size:12px;color:var(--text3);margin-top:2px;}
+
+  .hero-card-wrap{flex:1 1 320px;min-width:280px;display:flex;justify-content:center;animation:fadeUp .9s .3s cubic-bezier(.2,.7,.2,1) both;}
+  .hero-card{width:100%;max-width:380px;border-radius:22px;background:linear-gradient(180deg,rgba(7,20,35,0.98) 0%,rgba(4,14,25,0.98) 100%);border:1px solid rgba(5,215,255,0.26);box-shadow:0 0 50px rgba(5,215,255,0.07);padding:clamp(18px,5vw,28px);display:flex;flex-direction:column;gap:16px;animation:bob 6s ease-in-out infinite;}
+  .hero-logo{display:flex;justify-content:center;padding:14px 0 6px;}
+  .hero-logo img{width:200px;height:auto;object-fit:contain;filter:drop-shadow(0 0 18px rgba(5,215,255,0.28));animation:glow 4s ease-in-out infinite alternate;}
+  .jobs-label{display:flex;align-items:center;justify-content:center;gap:8px;font-family:var(--mono);font-size:11px;color:var(--text3);letter-spacing:1px;text-transform:uppercase;padding-top:12px;border-top:1px solid rgba(5,215,255,0.1);}
+  .jobs{display:flex;flex-direction:column;gap:10px;}
+  .job{display:flex;justify-content:space-between;align-items:center;padding:10px 12px;border-radius:10px;background:var(--surface2);transition:background .45s, transform .45s, box-shadow .45s;}
+  .job .jn{font-size:13px;color:var(--text);}
+  .job .jp{font-family:var(--mono);font-size:13px;color:var(--teal);font-weight:600;}
+  .job.hot{background:rgba(5,215,255,.14);transform:translateX(5px);box-shadow:inset 3px 0 0 var(--teal);}
+
+  /* ticker */
+  .ticker{overflow:hidden;border-block:1px solid rgba(5,215,255,.12);background:rgba(5,215,255,.03);}
+  .ticker-track{display:flex;width:max-content;animation:marquee 34s linear infinite;}
+  .ticker:hover .ticker-track{animation-play-state:paused;}
+  .ticker-group{display:flex;flex-shrink:0;}
+  .ticker-group span{display:flex;align-items:center;padding:14px 0 14px 28px;font-family:var(--mono);font-size:12px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text2);white-space:nowrap;}
+  .ticker-group span::after{content:"";width:6px;height:6px;border-radius:50%;background:var(--teal);margin-left:28px;opacity:.7;}
+
+  /* live tiles */
+  #services .inner{padding:clamp(40px,7vw,64px) 0 clamp(48px,9vw,88px);}
+  .sec-head{max-width:620px;margin-bottom:38px;}
+  .tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px;}
+  .tile{perspective:1100px;height:210px;outline:none;cursor:pointer;-webkit-tap-highlight-color:transparent;}
+  .tile-inner{position:relative;width:100%;height:100%;transition:transform .85s cubic-bezier(.4,.2,.2,1);transform-style:preserve-3d;}
+  .tile.flipped .tile-inner{transform:rotateY(180deg);}
+  @media (hover:hover){.tile:hover .tile-inner{transform:rotateY(180deg);}}
+  .tile:focus-visible .tile-inner,.tile:has(a:focus-visible) .tile-inner{transform:rotateY(180deg);}
+  .tile:focus-visible .tile-face{box-shadow:0 0 0 2px var(--teal);}
+  .tile-face{position:absolute;inset:0;border-radius:18px;padding:22px;display:flex;flex-direction:column;-webkit-backface-visibility:hidden;backface-visibility:hidden;overflow:hidden;transition:box-shadow .3s;}
+  .tile:hover .tile-face{box-shadow:0 0 0 1px rgba(5,215,255,.4),0 14px 44px rgba(5,215,255,.14);}
+  .tile-front{background:linear-gradient(180deg,rgba(8,22,38,0.98) 0%,rgba(3,11,22,0.99) 100%);border:1px solid rgba(5,215,255,0.2);}
+  .tile-front::before{content:"";position:absolute;width:160px;height:160px;right:-60px;top:-60px;border-radius:50%;background:radial-gradient(circle,rgba(5,215,255,.22),transparent 70%);}
+  .tile-back{transform:rotateY(180deg);background:linear-gradient(155deg,#08364f 0%,#041a2b 70%);border:1px solid rgba(5,215,255,0.45);gap:10px;}
+  .t-icon{position:relative;width:46px;height:46px;border-radius:13px;background:var(--teal-bg);border:1px solid rgba(5,215,255,.25);display:flex;align-items:center;justify-content:center;}
+  .t-bottom{margin-top:auto;position:relative;}
+  .t-name{font-size:17px;font-weight:700;color:var(--text);line-height:1.2;}
+  .t-row{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:8px;}
+  .t-price{font-family:var(--mono);font-size:15px;color:var(--teal);font-weight:600;white-space:nowrap;}
+  .t-hint{font-family:var(--mono);font-size:10.5px;letter-spacing:1px;text-transform:uppercase;color:var(--text3);}
+  .t-label{font-family:var(--mono);font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--teal);}
+  .t-desc{margin:0;font-size:13.5px;line-height:1.55;color:#c3d9e8;}
+  .t-link{margin-top:auto;display:inline-flex;align-items:center;gap:8px;align-self:flex-start;padding:9px 14px;border-radius:10px;background:rgba(37,211,102,.16);border:1px solid rgba(37,211,102,.5);color:#eafff2;font-size:13px;font-weight:600;transition:background .2s, transform .2s;}
+  .t-link:hover{color:#fff;background:rgba(37,211,102,.3);transform:translateX(3px);}
+
+  /* how we work */
+  #work .inner{padding:0 0 clamp(48px,9vw,88px);}
+  .work-box{background:linear-gradient(180deg,rgba(7,20,35,0.9) 0%,rgba(4,14,25,0.95) 100%);border:1px solid rgba(5,215,255,0.16);border-radius:22px;padding:clamp(22px,6vw,44px);display:flex;flex-wrap:wrap;gap:clamp(24px,5vw,36px);}
+  .work-intro{flex:1 1 260px;min-width:240px;}
+  .work-intro h2{margin:0 0 12px;font-size:clamp(21px,5.5vw,26px);font-weight:800;color:#f4f8ff;}
+  .work-intro p{margin:0;font-size:14px;color:var(--text2);line-height:1.65;}
+  .steps{flex:2 1 460px;min-width:280px;display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:22px;}
+  .step{display:flex;flex-direction:column;gap:8px;padding:14px;margin:-14px;border-radius:14px;transition:background .3s, transform .3s;}
+  .step:hover{background:rgba(5,215,255,.06);transform:translateY(-3px);}
+  .step .n{font-family:var(--mono);font-size:28px;font-weight:700;color:rgba(5,215,255,0.35);transition:color .3s, text-shadow .3s;}
+  .step:hover .n{color:var(--teal);text-shadow:0 0 22px rgba(5,215,255,.6);}
+  .step .h{font-size:14px;font-weight:700;color:var(--text);}
+  .step .d{font-size:12.5px;color:var(--text3);line-height:1.6;}
+
+  /* about */
+  #about .inner{padding:0 0 clamp(48px,9vw,88px);display:flex;flex-wrap:wrap;gap:clamp(28px,6vw,48px);align-items:center;}
+  .about-text{flex:1 1 360px;min-width:280px;}
+  .about-text h2{margin:0 0 16px;font-size:clamp(23px,6vw,30px);font-weight:800;color:#f4f8ff;}
+  .about-text p{margin:0 0 16px;font-size:15px;color:var(--text2);line-height:1.7;}
+  .about-text p:last-child{margin:0;}
+  .feats{flex:1 1 300px;min-width:260px;display:flex;flex-direction:column;gap:14px;}
+  .feat{display:flex;align-items:center;gap:14px;padding:18px 20px;border-radius:14px;background:var(--surface2);border:1px solid var(--border);transition:transform .3s, border-color .3s, box-shadow .3s;}
+  .feat:hover{transform:translateX(6px);border-color:rgba(5,215,255,.5);box-shadow:0 10px 34px rgba(5,215,255,.1);}
+  .feat .ic{width:36px;height:36px;border-radius:10px;background:var(--teal-bg);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .feat .ft{font-size:13.5px;font-weight:600;color:var(--text);}
+  .feat .fd{font-size:12px;color:var(--text3);margin-top:2px;}
+
+  /* contact */
+  #contact .inner{padding:0 0 clamp(48px,8vw,80px);}
+  .cta-box{position:relative;overflow:hidden;border-radius:24px;background:linear-gradient(120deg,#062a3d 0%,#031423 60%,#020814 100%);border:1px solid rgba(5,215,255,0.28);padding:clamp(28px,6vw,52px) clamp(20px,6vw,44px);display:flex;flex-wrap:wrap;gap:36px;align-items:center;justify-content:space-between;}
+  .cta-box::before{content:"";position:absolute;width:340px;height:340px;right:-100px;top:-120px;border-radius:50%;background:radial-gradient(circle,rgba(5,215,255,.22),transparent 70%);animation:float1 12s ease-in-out infinite alternate;pointer-events:none;}
+  .cta-copy{position:relative;flex:1 1 320px;min-width:260px;}
+  .cta-copy h2{margin:0 0 10px;font-size:clamp(22px,5.8vw,28px);font-weight:800;color:#f6fbff;}
+  .cta-copy p{margin:0;font-size:14.5px;color:var(--text2);line-height:1.6;max-width:420px;}
+  .cta-links{position:relative;display:flex;flex-direction:column;gap:12px;min-width:0;width:100%;max-width:380px;}
+  .clink{display:flex;align-items:center;gap:12px;padding:13px 18px;border-radius:12px;width:100%;transition:transform .2s, box-shadow .2s, background .2s;}
+  .clink:hover{transform:translateY(-2px);}
+  .clink svg{flex-shrink:0;}
+  .clink.wa{background:rgba(37,211,102,0.12);border:1px solid rgba(37,211,102,0.4);}
+  .clink.wa:hover{background:rgba(37,211,102,0.22);box-shadow:0 10px 30px rgba(37,211,102,.2);}
+  .clink.pe{background:rgba(5,215,255,0.08);border:1px solid rgba(5,215,255,0.3);}
+  .clink.pe:hover{background:rgba(5,215,255,0.15);box-shadow:0 10px 30px rgba(5,215,255,.15);}
+  .clink span{color:var(--text);min-width:0;}
+  .clink .m{font-family:var(--mono);font-size:14px;}
+  .clink .mail{font-family:var(--mono);font-size:13.5px;word-break:break-all;overflow-wrap:anywhere;}
+
+  /* footer */
+  .foot{border-top:1px solid rgba(5,215,255,0.1);}
+  .foot-in{padding:26px 0;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:10px;}
+  .foot-brand{display:flex;align-items:center;gap:8px;}
+  .foot-brand img{width:18px;height:18px;object-fit:contain;}
+  .foot-brand span{font-size:12px;color:var(--text3);}
+  .foot-note{font-family:var(--mono);font-size:11px;color:var(--text3);}
+
+  /* floating whatsapp */
+  .wa-fab{position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom));z-index:55;width:58px;height:58px;border-radius:50%;background:#25D366;display:flex;align-items:center;justify-content:center;box-shadow:0 10px 30px rgba(0,0,0,.45);animation:pop .6s 1.4s cubic-bezier(.3,1.6,.5,1) both;transition:transform .2s;}
+  .wa-fab:hover{transform:scale(1.08);}
+  .wa-fab::before{content:"";position:absolute;inset:0;border-radius:50%;border:3px solid #25D366;animation:ring 2.2s ease-out infinite;}
+
+  /* scroll reveal */
+  .js .reveal{opacity:0;transform:translateY(26px);transition:opacity .75s ease, transform .75s cubic-bezier(.2,.7,.2,1);transition-delay:var(--d,0s);}
+  .js .reveal.in{opacity:1;transform:none;}
+
+  @keyframes fadeUp{from{opacity:0;transform:translateY(24px);}to{opacity:1;transform:none;}}
+  @keyframes float1{from{transform:translate(0,0) scale(1);}to{transform:translate(-50px,40px) scale(1.15);}}
+  @keyframes float2{from{transform:translate(0,0) scale(1);}to{transform:translate(60px,-30px) scale(1.2);}}
+  @keyframes bob{0%,100%{transform:translateY(0);}50%{transform:translateY(-8px);}}
+  @keyframes glow{from{filter:drop-shadow(0 0 12px rgba(5,215,255,0.2));}to{filter:drop-shadow(0 0 28px rgba(5,215,255,0.5));}}
+  @keyframes ring{0%{transform:scale(1);opacity:.7;}100%{transform:scale(1.9);opacity:0;}}
+  @keyframes shine{0%,55%{left:-60%;}100%{left:130%;}}
+  @keyframes marquee{to{transform:translateX(-50%);}}
+  @keyframes pop{from{opacity:0;transform:scale(.3);}to{opacity:1;transform:scale(1);}}
+
+  @media (prefers-reduced-motion:reduce){
+    html{scroll-behavior:auto;}
+    *,*::before,*::after{animation:none !important;transition:none !important;}
+    .js .reveal{opacity:1;transform:none;}
+  }
 </style>
 </head>
-<body>
+<body id="top">
+<div class="progress" id="progress"></div>
 
-<div style="width:100%; min-width:0; background:radial-gradient(1100px 600px at 85% -10%, rgba(5,215,255,0.10), transparent 60%), linear-gradient(180deg,#03101f 0%,#010813 60%,#020814 100%); display:flex; flex-direction:column; align-items:stretch;">
+<div class="page">
 
   <!-- ===== NAV ===== -->
-  <div style="position:sticky; top:0; z-index:40; display:flex; justify-content:center; background:rgba(4,12,22,0.82); backdrop-filter:blur(10px); border-bottom:1px solid rgba(5,215,255,0.14);">
-    <div style="width:100%; max-width:1240px; box-sizing:border-box; padding:14px clamp(16px,5vw,28px); display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:14px;">
-      <div style="display:flex; align-items:center; gap:10px;">
-        <img src="logo.png" alt="MacKeesh Tech Solutions" style="width:34px; height:34px; object-fit:contain;">
-        <div style="display:flex; flex-direction:column; line-height:1.1;">
-          <span style="font-weight:800; font-size:16px; color:#f4f8ff; letter-spacing:-0.2px;">MacKeesh</span>
-          <span style="font-size:9px; font-weight:600; color:var(--teal); letter-spacing:2px; text-transform:uppercase;">Tech Solutions</span>
-        </div>
-      </div>
-      <div style="display:flex; align-items:center; gap:clamp(14px,4vw,26px); flex-wrap:wrap;">
-        <a href="#services" style="font-size:13px; color:var(--text2); font-weight:500;">Services</a>
-        <a href="#work" style="font-size:13px; color:var(--text2); font-weight:500;">How We Work</a>
-        <a href="#about" style="font-size:13px; color:var(--text2); font-weight:500;">About</a>
-        <a href="#contact" style="display:inline-flex; align-items:center; gap:6px; padding:9px 16px; border-radius:9px; background:var(--teal); color:#031019; font-weight:700; font-size:13px;">Get a Quote</a>
-      </div>
+  <header class="nav" id="nav">
+    <div class="nav-in">
+      <a class="brand" href="#top" aria-label="MacKeesh Tech Solutions — back to top">
+        <img src="logo.png" alt="">
+        <span class="brand-txt">
+          <span class="brand-name">MacKeesh</span>
+          <span class="brand-sub">Tech Solutions</span>
+        </span>
+      </a>
+      <nav class="links" aria-label="Main">
+        <a class="nl" href="#services">Services</a>
+        <a class="nl" href="#work">How We Work</a>
+        <a class="nl" href="#about">About</a>
+        <a class="btn btn-primary btn-quote" href="#contact">Get a Quote</a>
+      </nav>
     </div>
-  </div>
+  </header>
 
   <!-- ===== HERO ===== -->
-  <div style="display:flex; justify-content:center; padding:0 clamp(16px,5vw,28px);">
-    <div style="width:100%; max-width:1240px; display:flex; flex-wrap:wrap; align-items:center; gap:48px; padding:clamp(48px,10vw,88px) 0 clamp(40px,8vw,72px);">
-      <div style="flex:999 1 460px; min-width:0; display:flex; flex-direction:column; gap:22px;">
-        <div style="display:inline-flex; align-items:center; gap:8px; align-self:flex-start; padding:6px 12px; border-radius:20px; background:var(--teal-bg); border:1px solid rgba(5,215,255,0.32);">
-          <span style="width:6px; height:6px; border-radius:50%; background:var(--teal);"></span>
-          <span style="font-family:var(--mono); font-size:11px; letter-spacing:1px; color:var(--teal); text-transform:uppercase;">Based in Johannesburg, South Africa</span>
+  <section class="hero wrap">
+    <div class="orb o1" aria-hidden="true"></div>
+    <div class="orb o2" aria-hidden="true"></div>
+    <div class="inner hero-in">
+      <div class="hero-text">
+        <div class="badge">
+          <span class="pulse"></span>
+          <span class="t">Based in Johannesburg, South Africa</span>
         </div>
-        <h1 style="margin:0; font-size:clamp(32px,8.5vw,52px); line-height:1.1; font-weight:800; color:#f6fbff; letter-spacing:-1px;">IT support that keeps your tech <span style="color:var(--teal);">running</span>, not waiting.</h1>
-        <p style="margin:0; font-size:clamp(15px,4.2vw,17px); line-height:1.65; color:var(--text2); max-width:520px;">MacKeesh Tech Solutions handles the activations, repairs and troubleshooting that individuals and small businesses need — fast turnarounds, upfront pricing, no jargon.</p>
-        <div style="display:flex; gap:12px; flex-wrap:wrap; margin-top:4px;">
-          <a href="tel:+27728645452" style="display:inline-flex; align-items:center; gap:8px; padding:13px 22px; border-radius:11px; background:var(--teal); color:#031019; font-weight:700; font-size:14px;">
+        <h1 class="hero-h">IT support that keeps your tech <span class="rot" id="rot">running</span>, not waiting.</h1>
+        <p class="lead">MacKeesh Tech Solutions handles the activations, repairs and troubleshooting that individuals and small businesses need — fast turnarounds, upfront pricing, no jargon.</p>
+        <div class="cta-row">
+          <a class="btn btn-primary" href="tel:+27728645452">
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2.5 2.5c0-.5.5-1 1-1h2l1.5 3.5-1.5 1.5a8 8 0 004 4l1.5-1.5 3.5 1.5v2c0 .5-.5 1-1 1C7 13.5 2.5 9 2.5 2.5z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg>
             Call 072 864 5452
           </a>
-          <a href="mailto:mackeeshtechsolutions@gmail.com" style="display:inline-flex; align-items:center; gap:8px; padding:13px 22px; border-radius:11px; background:var(--surface2); border:1px solid var(--border2); color:var(--text); font-weight:600; font-size:14px;">
+          <a class="btn btn-ghost" href="mailto:mackeeshtechsolutions@gmail.com">
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="1.5" y="3" width="13" height="10" rx="1.5" stroke="currentColor" stroke-width="1.3"/><path d="M2 4l6 5 6-5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
             Email us
           </a>
         </div>
-        <div style="display:flex; gap:28px; flex-wrap:wrap; margin-top:18px; padding-top:22px; border-top:1px solid rgba(5,215,255,0.12);">
-          <div><div style="font-family:var(--mono); font-size:clamp(18px,5vw,22px); font-weight:600; color:var(--teal);">R100+</div><div style="font-size:12px; color:var(--text3); margin-top:2px;">Starting rate per callout</div></div>
-          <div><div style="font-family:var(--mono); font-size:clamp(18px,5vw,22px); font-weight:600; color:var(--teal);">6</div><div style="font-size:12px; color:var(--text3); margin-top:2px;">Core service lines</div></div>
-          <div><div style="font-family:var(--mono); font-size:clamp(18px,5vw,22px); font-weight:600; color:var(--teal);">7-day</div><div style="font-size:12px; color:var(--text3); margin-top:2px;">Invoice payment terms</div></div>
+        <div class="stats">
+          <div><div class="stat-v"><span class="count" data-to="100" data-pre="R" data-suf="+">R100+</span></div><div class="stat-l">Starting rate per callout</div></div>
+          <div><div class="stat-v"><span class="count" data-to="6">6</span></div><div class="stat-l">Core service lines</div></div>
+          <div><div class="stat-v"><span class="count" data-to="7" data-suf="-day">7-day</span></div><div class="stat-l">Invoice payment terms</div></div>
         </div>
       </div>
-      <div style="flex:1 1 320px; min-width:280px; display:flex; justify-content:center;">
-        <div style="width:100%; max-width:380px; border-radius:22px; background:linear-gradient(180deg,rgba(7,20,35,0.98) 0%,rgba(4,14,25,0.98) 100%); border:1px solid rgba(5,215,255,0.26); box-shadow:0 0 50px rgba(5,215,255,0.07); padding:clamp(18px,5vw,28px); display:flex; flex-direction:column; gap:16px;">
-          <div style="display:flex; justify-content:center; padding:14px 0 6px;">
-            <img src="logo.png" alt="MacKeesh Tech Solutions logo" style="width:200px; height:auto; object-fit:contain; filter:drop-shadow(0 0 18px rgba(5,215,255,0.28));">
-          </div>
-          <div style="font-family:var(--mono); font-size:11px; color:var(--text3); text-align:center; letter-spacing:1px; text-transform:uppercase; padding-top:4px; border-top:1px solid rgba(5,215,255,0.1);">Today's quick jobs</div>
-          <div style="display:flex; flex-direction:column; gap:10px;">
-            <div style="display:flex; justify-content:space-between; align-items:center; padding:10px 12px; border-radius:10px; background:var(--surface2);">
-              <span style="font-size:13px; color:var(--text);">Windows Activation</span>
-              <span style="font-family:var(--mono); font-size:13px; color:var(--teal); font-weight:600;">R250</span>
-            </div>
-            <div style="display:flex; justify-content:space-between; align-items:center; padding:10px 12px; border-radius:10px; background:var(--surface2);">
-              <span style="font-size:13px; color:var(--text);">Laptop Assessment</span>
-              <span style="font-family:var(--mono); font-size:13px; color:var(--teal); font-weight:600;">R100</span>
-            </div>
-            <div style="display:flex; justify-content:space-between; align-items:center; padding:10px 12px; border-radius:10px; background:var(--surface2);">
-              <span style="font-size:13px; color:var(--text);">Virus Removal</span>
-              <span style="font-family:var(--mono); font-size:13px; color:var(--teal); font-weight:600;">R100</span>
-            </div>
+      <div class="hero-card-wrap">
+        <div class="hero-card">
+          <div class="hero-logo"><img src="logo.png" alt="MacKeesh Tech Solutions logo"></div>
+          <div class="jobs-label"><span class="pulse"></span>Popular quick jobs</div>
+          <div class="jobs" id="jobs">
+            <div class="job hot"><span class="jn">Windows Activation</span><span class="jp">R250</span></div>
+            <div class="job"><span class="jn">Laptop Assessment</span><span class="jp">R100</span></div>
+            <div class="job"><span class="jn">Virus Removal</span><span class="jp">R100</span></div>
           </div>
         </div>
       </div>
     </div>
+  </section>
+
+  <!-- ===== TICKER ===== -->
+  <div class="ticker" aria-hidden="true">
+    <div class="ticker-track">
+      <div class="ticker-group"><span>Windows Activation</span><span>Office Activation</span><span>Laptop Assessment</span><span>Hardware Repair</span><span>Software Installation</span><span>Virus Removal</span></div>
+      <div class="ticker-group"><span>Windows Activation</span><span>Office Activation</span><span>Laptop Assessment</span><span>Hardware Repair</span><span>Software Installation</span><span>Virus Removal</span></div>
+    </div>
   </div>
 
-  <!-- ===== SERVICES ===== -->
-  <div id="services" style="display:flex; justify-content:center; padding:0 clamp(16px,5vw,28px);">
-    <div style="width:100%; max-width:1240px; padding:clamp(32px,6vw,48px) 0 clamp(48px,9vw,88px);">
-      <div style="max-width:620px; margin-bottom:38px;">
-        <div style="font-family:var(--mono); font-size:11px; letter-spacing:2px; color:var(--teal); text-transform:uppercase; margin-bottom:10px;">What we do</div>
-        <h2 style="margin:0 0 10px; font-size:clamp(24px,6.5vw,32px); font-weight:800; color:#f4f8ff;">Clear services, upfront pricing</h2>
-        <p style="margin:0; font-size:15px; color:var(--text2); line-height:1.6;">Every job is priced before we start — no surprises on the invoice. Rates in South African Rand.</p>
+  <!-- ===== SERVICES (LIVE TILES) ===== -->
+  <section id="services" class="wrap">
+    <div class="inner">
+      <div class="sec-head reveal">
+        <div class="eyebrow">What we do</div>
+        <h2 class="sec-title">Clear services, upfront pricing</h2>
+        <p class="sec-sub">Every job is priced before we start — no surprises on the invoice. Rates in South African Rand.</p>
       </div>
-      <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:18px;">
+      <div class="tiles" id="tiles" data-stagger>
 
-        <div style="background:linear-gradient(180deg,rgba(6,18,31,0.96) 0%,rgba(3,11,22,0.98) 100%); border:1px solid rgba(5,215,255,0.18); border-radius:18px; padding:24px; display:flex; flex-direction:column; gap:14px;">
-          <div style="width:44px; height:44px; border-radius:12px; background:var(--teal-bg); display:flex; align-items:center; justify-content:center;">
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><rect x="2" y="3" width="16" height="11" rx="1.5" stroke="#05d7ff" stroke-width="1.5"/><path d="M7 17h6M10 14v3" stroke="#05d7ff" stroke-width="1.5" stroke-linecap="round"/><path d="M6 8l2.5 2.5L6 13M11 13h3" stroke="#05d7ff" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <div class="tile" tabindex="0">
+          <div class="tile-inner">
+            <div class="tile-face tile-front">
+              <div class="t-icon"><svg width="22" height="22" viewBox="0 0 20 20" fill="none"><rect x="2" y="3" width="16" height="11" rx="1.5" stroke="#05d7ff" stroke-width="1.5"/><path d="M7 17h6M10 14v3" stroke="#05d7ff" stroke-width="1.5" stroke-linecap="round"/><path d="M6 8l2.5 2.5L6 13M11 13h3" stroke="#05d7ff" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              <div class="t-bottom">
+                <div class="t-name">Windows Activation</div>
+                <div class="t-row"><span class="t-price">R250</span><span class="t-hint">Details ↻</span></div>
+              </div>
+            </div>
+            <div class="tile-face tile-back">
+              <div class="t-label">Windows Activation · R250</div>
+              <p class="t-desc">Genuine licence activation so your machine stops nagging and stays compliant.</p>
+              <a class="t-link" href="https://wa.me/27728645452?text=Hi%20MacKeesh%20Tech%20Solutions%2C%20I%27d%20like%20to%20book%3A%20Windows%20Activation." target="_blank" rel="noopener">Book on WhatsApp →</a>
+            </div>
           </div>
-          <div style="display:flex; align-items:baseline; justify-content:space-between; gap:10px;">
-            <span style="font-size:16px; font-weight:700; color:var(--text);">Windows Activation</span>
-            <span style="font-family:var(--mono); font-size:14px; color:var(--teal); font-weight:600; white-space:nowrap;">R250</span>
-          </div>
-          <p style="margin:0; font-size:13px; color:var(--text3); line-height:1.6;">Genuine licence activation so your machine stops nagging and stays compliant.</p>
         </div>
 
-        <div style="background:linear-gradient(180deg,rgba(6,18,31,0.96) 0%,rgba(3,11,22,0.98) 100%); border:1px solid rgba(5,215,255,0.18); border-radius:18px; padding:24px; display:flex; flex-direction:column; gap:14px;">
-          <div style="width:44px; height:44px; border-radius:12px; background:var(--teal-bg); display:flex; align-items:center; justify-content:center;">
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><rect x="3" y="4" width="14" height="10" rx="1.5" stroke="#05d7ff" stroke-width="1.5"/><path d="M3 7h14" stroke="#05d7ff" stroke-width="1.4"/><circle cx="6" cy="5.5" r=".6" fill="#05d7ff"/></svg>
+        <div class="tile" tabindex="0">
+          <div class="tile-inner">
+            <div class="tile-face tile-front">
+              <div class="t-icon"><svg width="22" height="22" viewBox="0 0 20 20" fill="none"><rect x="3" y="4" width="14" height="10" rx="1.5" stroke="#05d7ff" stroke-width="1.5"/><path d="M3 7h14" stroke="#05d7ff" stroke-width="1.4"/><circle cx="6" cy="5.5" r=".6" fill="#05d7ff"/></svg></div>
+              <div class="t-bottom">
+                <div class="t-name">Office Activation</div>
+                <div class="t-row"><span class="t-price">R250</span><span class="t-hint">Details ↻</span></div>
+              </div>
+            </div>
+            <div class="tile-face tile-back">
+              <div class="t-label">Office Activation · R250</div>
+              <p class="t-desc">Word, Excel, PowerPoint and the rest of the suite, properly licensed and ready to use.</p>
+              <a class="t-link" href="https://wa.me/27728645452?text=Hi%20MacKeesh%20Tech%20Solutions%2C%20I%27d%20like%20to%20book%3A%20Office%20Activation." target="_blank" rel="noopener">Book on WhatsApp →</a>
+            </div>
           </div>
-          <div style="display:flex; align-items:baseline; justify-content:space-between; gap:10px;">
-            <span style="font-size:16px; font-weight:700; color:var(--text);">Office Activation</span>
-            <span style="font-family:var(--mono); font-size:14px; color:var(--teal); font-weight:600; white-space:nowrap;">R250</span>
-          </div>
-          <p style="margin:0; font-size:13px; color:var(--text3); line-height:1.6;">Word, Excel, PowerPoint and the rest of the suite, properly licensed and ready to use.</p>
         </div>
 
-        <div style="background:linear-gradient(180deg,rgba(6,18,31,0.96) 0%,rgba(3,11,22,0.98) 100%); border:1px solid rgba(5,215,255,0.18); border-radius:18px; padding:24px; display:flex; flex-direction:column; gap:14px;">
-          <div style="width:44px; height:44px; border-radius:12px; background:var(--teal-bg); display:flex; align-items:center; justify-content:center;">
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="7" stroke="#05d7ff" stroke-width="1.5"/><path d="M10 6v4l3 2" stroke="#05d7ff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <div class="tile" tabindex="0">
+          <div class="tile-inner">
+            <div class="tile-face tile-front">
+              <div class="t-icon"><svg width="22" height="22" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="7" stroke="#05d7ff" stroke-width="1.5"/><path d="M10 6v4l3 2" stroke="#05d7ff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              <div class="t-bottom">
+                <div class="t-name">Laptop Assessment</div>
+                <div class="t-row"><span class="t-price">R100</span><span class="t-hint">Details ↻</span></div>
+              </div>
+            </div>
+            <div class="tile-face tile-back">
+              <div class="t-label">Laptop Assessment · R100</div>
+              <p class="t-desc">Full diagnostic to find out exactly what's wrong before you spend on a fix.</p>
+              <a class="t-link" href="https://wa.me/27728645452?text=Hi%20MacKeesh%20Tech%20Solutions%2C%20I%27d%20like%20to%20book%3A%20Laptop%20Assessment." target="_blank" rel="noopener">Book on WhatsApp →</a>
+            </div>
           </div>
-          <div style="display:flex; align-items:baseline; justify-content:space-between; gap:10px;">
-            <span style="font-size:16px; font-weight:700; color:var(--text);">Laptop Assessment</span>
-            <span style="font-family:var(--mono); font-size:14px; color:var(--teal); font-weight:600; white-space:nowrap;">R100</span>
-          </div>
-          <p style="margin:0; font-size:13px; color:var(--text3); line-height:1.6;">Full diagnostic to find out exactly what's wrong before you spend on a fix.</p>
         </div>
 
-        <div style="background:linear-gradient(180deg,rgba(6,18,31,0.96) 0%,rgba(3,11,22,0.98) 100%); border:1px solid rgba(5,215,255,0.18); border-radius:18px; padding:24px; display:flex; flex-direction:column; gap:14px;">
-          <div style="width:44px; height:44px; border-radius:12px; background:var(--teal-bg); display:flex; align-items:center; justify-content:center;">
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 2l6 3v5c0 4.5-2.7 7-6 8-3.3-1-6-3.5-6-8V5l6-3z" stroke="#05d7ff" stroke-width="1.4" stroke-linejoin="round"/><path d="M7.3 10l1.9 1.9 3.5-3.9" stroke="#05d7ff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <div class="tile" tabindex="0">
+          <div class="tile-inner">
+            <div class="tile-face tile-front">
+              <div class="t-icon"><svg width="22" height="22" viewBox="0 0 20 20" fill="none"><path d="M10 2l6 3v5c0 4.5-2.7 7-6 8-3.3-1-6-3.5-6-8V5l6-3z" stroke="#05d7ff" stroke-width="1.4" stroke-linejoin="round"/><path d="M7.3 10l1.9 1.9 3.5-3.9" stroke="#05d7ff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              <div class="t-bottom">
+                <div class="t-name">Hardware Repair</div>
+                <div class="t-row"><span class="t-price">From R300</span><span class="t-hint">Details ↻</span></div>
+              </div>
+            </div>
+            <div class="tile-face tile-back">
+              <div class="t-label">Hardware Repair · From R300</div>
+              <p class="t-desc">Screens, batteries, keyboards, ports and the physical fixes that keep devices alive.</p>
+              <a class="t-link" href="https://wa.me/27728645452?text=Hi%20MacKeesh%20Tech%20Solutions%2C%20I%27d%20like%20to%20book%3A%20Hardware%20Repair." target="_blank" rel="noopener">Book on WhatsApp →</a>
+            </div>
           </div>
-          <div style="display:flex; align-items:baseline; justify-content:space-between; gap:10px;">
-            <span style="font-size:16px; font-weight:700; color:var(--text);">Hardware Repair</span>
-            <span style="font-family:var(--mono); font-size:14px; color:var(--teal); font-weight:600; white-space:nowrap;">From R300</span>
-          </div>
-          <p style="margin:0; font-size:13px; color:var(--text3); line-height:1.6;">Screens, batteries, keyboards, ports and the physical fixes that keep devices alive.</p>
         </div>
 
-        <div style="background:linear-gradient(180deg,rgba(6,18,31,0.96) 0%,rgba(3,11,22,0.98) 100%); border:1px solid rgba(5,215,255,0.18); border-radius:18px; padding:24px; display:flex; flex-direction:column; gap:14px;">
-          <div style="width:44px; height:44px; border-radius:12px; background:var(--teal-bg); display:flex; align-items:center; justify-content:center;">
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><rect x="3" y="2.5" width="14" height="15" rx="2" stroke="#05d7ff" stroke-width="1.5"/><path d="M7 8l2.3 2.3L13 6" stroke="#05d7ff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M6.5 13.5h7" stroke="#05d7ff" stroke-width="1.3" stroke-linecap="round"/></svg>
+        <div class="tile" tabindex="0">
+          <div class="tile-inner">
+            <div class="tile-face tile-front">
+              <div class="t-icon"><svg width="22" height="22" viewBox="0 0 20 20" fill="none"><rect x="3" y="2.5" width="14" height="15" rx="2" stroke="#05d7ff" stroke-width="1.5"/><path d="M7 8l2.3 2.3L13 6" stroke="#05d7ff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M6.5 13.5h7" stroke="#05d7ff" stroke-width="1.3" stroke-linecap="round"/></svg></div>
+              <div class="t-bottom">
+                <div class="t-name">Software Installation</div>
+                <div class="t-row"><span class="t-price">R100</span><span class="t-hint">Details ↻</span></div>
+              </div>
+            </div>
+            <div class="tile-face tile-back">
+              <div class="t-label">Software Installation · R100</div>
+              <p class="t-desc">The apps you need, set up correctly and ready to go the first time.</p>
+              <a class="t-link" href="https://wa.me/27728645452?text=Hi%20MacKeesh%20Tech%20Solutions%2C%20I%27d%20like%20to%20book%3A%20Software%20Installation." target="_blank" rel="noopener">Book on WhatsApp →</a>
+            </div>
           </div>
-          <div style="display:flex; align-items:baseline; justify-content:space-between; gap:10px;">
-            <span style="font-size:16px; font-weight:700; color:var(--text);">Software Installation</span>
-            <span style="font-family:var(--mono); font-size:14px; color:var(--teal); font-weight:600; white-space:nowrap;">R100</span>
-          </div>
-          <p style="margin:0; font-size:13px; color:var(--text3); line-height:1.6;">The apps you need, set up correctly and ready to go the first time.</p>
         </div>
 
-        <div style="background:linear-gradient(180deg,rgba(6,18,31,0.96) 0%,rgba(3,11,22,0.98) 100%); border:1px solid rgba(5,215,255,0.18); border-radius:18px; padding:24px; display:flex; flex-direction:column; gap:14px;">
-          <div style="width:44px; height:44px; border-radius:12px; background:var(--teal-bg); display:flex; align-items:center; justify-content:center;">
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 2a7 7 0 100 14 7 7 0 000-14z" stroke="#05d7ff" stroke-width="1.5"/><path d="M7.5 7.5l5 5M12.5 7.5l-5 5" stroke="#05d7ff" stroke-width="1.6" stroke-linecap="round"/></svg>
+        <div class="tile" tabindex="0">
+          <div class="tile-inner">
+            <div class="tile-face tile-front">
+              <div class="t-icon"><svg width="22" height="22" viewBox="0 0 20 20" fill="none"><path d="M10 2a7 7 0 100 14 7 7 0 000-14z" stroke="#05d7ff" stroke-width="1.5"/><path d="M7.5 7.5l5 5M12.5 7.5l-5 5" stroke="#05d7ff" stroke-width="1.6" stroke-linecap="round"/></svg></div>
+              <div class="t-bottom">
+                <div class="t-name">Virus Removal</div>
+                <div class="t-row"><span class="t-price">R100</span><span class="t-hint">Details ↻</span></div>
+              </div>
+            </div>
+            <div class="tile-face tile-back">
+              <div class="t-label">Virus Removal · R100</div>
+              <p class="t-desc">Malware cleaned out and your system hardened against the next attempt.</p>
+              <a class="t-link" href="https://wa.me/27728645452?text=Hi%20MacKeesh%20Tech%20Solutions%2C%20I%27d%20like%20to%20book%3A%20Virus%20Removal." target="_blank" rel="noopener">Book on WhatsApp →</a>
+            </div>
           </div>
-          <div style="display:flex; align-items:baseline; justify-content:space-between; gap:10px;">
-            <span style="font-size:16px; font-weight:700; color:var(--text);">Virus Removal</span>
-            <span style="font-family:var(--mono); font-size:14px; color:var(--teal); font-weight:600; white-space:nowrap;">R100</span>
-          </div>
-          <p style="margin:0; font-size:13px; color:var(--text3); line-height:1.6;">Malware cleaned out and your system hardened against the next attempt.</p>
         </div>
 
       </div>
     </div>
-  </div>
+  </section>
 
   <!-- ===== HOW WE WORK ===== -->
-  <div id="work" style="display:flex; justify-content:center; padding:0 clamp(16px,5vw,28px);">
-    <div style="width:100%; max-width:1240px; padding:0 0 clamp(48px,9vw,88px);">
-      <div style="background:linear-gradient(180deg,rgba(7,20,35,0.9) 0%,rgba(4,14,25,0.95) 100%); border:1px solid rgba(5,215,255,0.16); border-radius:22px; padding:clamp(22px,6vw,44px); display:flex; flex-wrap:wrap; gap:clamp(24px,5vw,36px);">
-        <div style="flex:1 1 260px; min-width:240px;">
-          <div style="font-family:var(--mono); font-size:11px; letter-spacing:2px; color:var(--teal); text-transform:uppercase; margin-bottom:10px;">How we work</div>
-          <h2 style="margin:0 0 12px; font-size:clamp(21px,5.5vw,26px); font-weight:800; color:#f4f8ff;">Three steps, one invoice</h2>
-          <p style="margin:0; font-size:14px; color:var(--text2); line-height:1.65;">Every job — from a quick activation to a hardware repair — moves through the same simple process, tracked from first call to final invoice.</p>
+  <section id="work" class="wrap">
+    <div class="inner">
+      <div class="work-box reveal">
+        <div class="work-intro">
+          <div class="eyebrow">How we work</div>
+          <h2>Three steps, one invoice</h2>
+          <p>Every job — from a quick activation to a hardware repair — moves through the same simple process, tracked from first call to final invoice.</p>
         </div>
-        <div style="flex:2 1 460px; min-width:280px; display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:22px;">
-          <div style="display:flex; flex-direction:column; gap:8px;">
-            <span style="font-family:var(--mono); font-size:28px; font-weight:700; color:rgba(5,215,255,0.35);">01</span>
-            <span style="font-size:14px; font-weight:700; color:var(--text);">Tell us what's wrong</span>
-            <span style="font-size:12.5px; color:var(--text3); line-height:1.6;">Call or message with the device and the issue — we quote before anything starts.</span>
+        <div class="steps">
+          <div class="step">
+            <span class="n">01</span>
+            <span class="h">Tell us what's wrong</span>
+            <span class="d">Call or message with the device and the issue — we quote before anything starts.</span>
           </div>
-          <div style="display:flex; flex-direction:column; gap:8px;">
-            <span style="font-family:var(--mono); font-size:28px; font-weight:700; color:rgba(5,215,255,0.35);">02</span>
-            <span style="font-size:14px; font-weight:700; color:var(--text);">We fix it</span>
-            <span style="font-size:12.5px; color:var(--text3); line-height:1.6;">Assessment, activation, repair or install — done at the agreed price, nothing added later.</span>
+          <div class="step">
+            <span class="n">02</span>
+            <span class="h">We fix it</span>
+            <span class="d">Assessment, activation, repair or install — done at the agreed price, nothing added later.</span>
           </div>
-          <div style="display:flex; flex-direction:column; gap:8px;">
-            <span style="font-family:var(--mono); font-size:28px; font-weight:700; color:rgba(5,215,255,0.35);">03</span>
-            <span style="font-size:14px; font-weight:700; color:var(--text);">You get an invoice</span>
-            <span style="font-size:12.5px; color:var(--text3); line-height:1.6;">A proper invoice with 7-day payment terms, kept on file for your own records.</span>
+          <div class="step">
+            <span class="n">03</span>
+            <span class="h">You get an invoice</span>
+            <span class="d">A proper invoice with 7-day payment terms, kept on file for your own records.</span>
           </div>
         </div>
       </div>
     </div>
-  </div>
+  </section>
 
   <!-- ===== ABOUT ===== -->
-  <div id="about" style="display:flex; justify-content:center; padding:0 clamp(16px,5vw,28px);">
-    <div style="width:100%; max-width:1240px; padding:0 0 clamp(48px,9vw,88px); display:flex; flex-wrap:wrap; gap:clamp(28px,6vw,48px); align-items:center;">
-      <div style="flex:1 1 360px; min-width:280px;">
-        <div style="font-family:var(--mono); font-size:11px; letter-spacing:2px; color:var(--teal); text-transform:uppercase; margin-bottom:10px;">About</div>
-        <h2 style="margin:0 0 16px; font-size:clamp(23px,6vw,30px); font-weight:800; color:#f4f8ff;">Independent IT support, run properly</h2>
-        <p style="margin:0 0 16px; font-size:15px; color:var(--text2); line-height:1.7;">MacKeesh Tech Solutions is a one-stop shop for the IT problems individuals and small teams run into day to day — software that won't activate, a laptop that's slowed to a crawl, a virus that won't quit. Every job is logged, priced and invoiced properly, so you always know what you're paying for.</p>
-        <p style="margin:0; font-size:15px; color:var(--text2); line-height:1.7;">No call-out is too small and no job gets handed off — you deal with the person doing the work, start to finish.</p>
+  <section id="about" class="wrap">
+    <div class="inner">
+      <div class="about-text reveal">
+        <div class="eyebrow">About</div>
+        <h2>Independent IT support, run properly</h2>
+        <p>MacKeesh Tech Solutions is a one-stop shop for the IT problems individuals and small teams run into day to day — software that won't activate, a laptop that's slowed to a crawl, a virus that won't quit. Every job is logged, priced and invoiced properly, so you always know what you're paying for.</p>
+        <p>No call-out is too small and no job gets handed off — you deal with the person doing the work, start to finish.</p>
       </div>
-      <div style="flex:1 1 300px; min-width:260px; display:flex; flex-direction:column; gap:14px;">
-        <div style="display:flex; align-items:center; gap:14px; padding:18px 20px; border-radius:14px; background:var(--surface2); border:1px solid var(--border);">
-          <span style="width:36px; height:36px; border-radius:10px; background:var(--teal-bg); display:flex; align-items:center; justify-content:center; flex-shrink:0;">
-            <svg width="17" height="17" viewBox="0 0 16 16" fill="none"><path d="M8 1v14M1 8h14" stroke="#05d7ff" stroke-width="1.6" stroke-linecap="round"/></svg>
-          </span>
-          <div>
-            <div style="font-size:13.5px; font-weight:600; color:var(--text);">Upfront, preset pricing</div>
-            <div style="font-size:12px; color:var(--text3); margin-top:2px;">You know the cost before the job starts.</div>
-          </div>
+      <div class="feats" data-stagger>
+        <div class="feat">
+          <span class="ic"><svg width="17" height="17" viewBox="0 0 16 16" fill="none"><path d="M8 1v14M1 8h14" stroke="#05d7ff" stroke-width="1.6" stroke-linecap="round"/></svg></span>
+          <div><div class="ft">Upfront, preset pricing</div><div class="fd">You know the cost before the job starts.</div></div>
         </div>
-        <div style="display:flex; align-items:center; gap:14px; padding:18px 20px; border-radius:14px; background:var(--surface2); border:1px solid var(--border);">
-          <span style="width:36px; height:36px; border-radius:10px; background:var(--teal-bg); display:flex; align-items:center; justify-content:center; flex-shrink:0;">
-            <svg width="17" height="17" viewBox="0 0 16 16" fill="none"><path d="M8 1l6.5 3.5V11L8 14.5 1.5 11V4.5L8 1z" stroke="#05d7ff" stroke-width="1.4" stroke-linejoin="round"/></svg>
-          </span>
-          <div>
-            <div style="font-size:13.5px; font-weight:600; color:var(--text);">Proper documentation</div>
-            <div style="font-size:12px; color:var(--text3); margin-top:2px;">Every service and invoice kept on record.</div>
-          </div>
+        <div class="feat">
+          <span class="ic"><svg width="17" height="17" viewBox="0 0 16 16" fill="none"><path d="M8 1l6.5 3.5V11L8 14.5 1.5 11V4.5L8 1z" stroke="#05d7ff" stroke-width="1.4" stroke-linejoin="round"/></svg></span>
+          <div><div class="ft">Proper documentation</div><div class="fd">Every service and invoice kept on record.</div></div>
         </div>
-        <div style="display:flex; align-items:center; gap:14px; padding:18px 20px; border-radius:14px; background:var(--surface2); border:1px solid var(--border);">
-          <span style="width:36px; height:36px; border-radius:10px; background:var(--teal-bg); display:flex; align-items:center; justify-content:center; flex-shrink:0;">
-            <svg width="17" height="17" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="5.5" r="2.5" stroke="#05d7ff" stroke-width="1.4"/><path d="M2.5 14c.5-3.3 2.8-5 5.5-5s5 1.7 5.5 5" stroke="#05d7ff" stroke-width="1.4" stroke-linecap="round"/></svg>
-          </span>
-          <div>
-            <div style="font-size:13.5px; font-weight:600; color:var(--text);">One person, start to finish</div>
-            <div style="font-size:12px; color:var(--text3); margin-top:2px;">You work directly with who does the job.</div>
-          </div>
+        <div class="feat">
+          <span class="ic"><svg width="17" height="17" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="5.5" r="2.5" stroke="#05d7ff" stroke-width="1.4"/><path d="M2.5 14c.5-3.3 2.8-5 5.5-5s5 1.7 5.5 5" stroke="#05d7ff" stroke-width="1.4" stroke-linecap="round"/></svg></span>
+          <div><div class="ft">One person, start to finish</div><div class="fd">You work directly with who does the job.</div></div>
         </div>
       </div>
     </div>
-  </div>
+  </section>
 
   <!-- ===== CONTACT / CTA ===== -->
-  <div id="contact" style="display:flex; justify-content:center; padding:0 clamp(16px,5vw,28px);">
-    <div style="width:100%; max-width:1240px; padding:0 0 clamp(48px,8vw,80px);">
-      <div style="position:relative; overflow:hidden; border-radius:24px; background:linear-gradient(120deg,#062a3d 0%,#031423 60%,#020814 100%); border:1px solid rgba(5,215,255,0.28); padding:clamp(28px,6vw,52px) clamp(20px,6vw,44px); display:flex; flex-wrap:wrap; gap:36px; align-items:center; justify-content:space-between;">
-        <div style="flex:1 1 320px; min-width:260px;">
-          <h2 style="margin:0 0 10px; font-size:clamp(22px,5.8vw,28px); font-weight:800; color:#f6fbff;">Got a device giving you trouble?</h2>
-          <p style="margin:0; font-size:14.5px; color:var(--text2); line-height:1.6; max-width:420px;">Reach out directly — most jobs are quoted the same day.</p>
+  <section id="contact" class="wrap">
+    <div class="inner">
+      <div class="cta-box reveal">
+        <div class="cta-copy">
+          <h2>Got a device giving you trouble?</h2>
+          <p>Reach out directly — most jobs are quoted the same day.</p>
         </div>
-        <div style="display:flex; flex-direction:column; gap:12px; min-width:0; width:100%; max-width:380px;">
-          <a href="https://wa.me/27728645452?text=Hi%20MacKeesh%20Tech%20Solutions%2C%20I'd%20like%20to%20ask%20about%20a%20service." target="_blank" rel="noopener" style="display:flex; align-items:center; gap:12px; padding:13px 18px; border-radius:12px; background:rgba(37,211,102,0.12); border:1px solid rgba(37,211,102,0.4); box-sizing:border-box; width:100%;">
-            <svg width="17" height="17" style="flex-shrink:0;" viewBox="0 0 24 24" fill="#25D366"><path d="M12.04 2c-5.5 0-9.96 4.46-9.96 9.96 0 1.76.46 3.47 1.33 4.98L2 22l5.2-1.36a9.9 9.9 0 004.84 1.23h.004c5.5 0 9.96-4.46 9.96-9.96 0-2.66-1.04-5.16-2.92-7.04A9.9 9.9 0 0012.04 2zm0 1.67c2.3 0 4.46.9 6.08 2.52a8.56 8.56 0 012.51 6.08c0 4.74-3.86 8.6-8.6 8.6a8.6 8.6 0 01-4.38-1.2l-.31-.19-3.09.81.82-3-.2-.32a8.55 8.55 0 01-1.31-4.58c0-4.74 3.86-8.6 8.6-8.6zm-4.9 4.6c-.17 0-.44.06-.67.32-.23.26-.88.86-.88 2.1 0 1.24.9 2.43 1.03 2.6.13.17 1.75 2.8 4.3 3.82 2.13.85 2.56.68 3.03.64.46-.04 1.5-.61 1.71-1.2.21-.6.21-1.1.15-1.21-.06-.1-.23-.17-.48-.3-.26-.13-1.5-.74-1.74-.82-.23-.09-.4-.13-.57.13-.17.26-.65.82-.8 1-.14.17-.29.18-.54.06-.26-.13-1.08-.4-2.06-1.27-.76-.68-1.28-1.51-1.43-1.77-.14-.26-.01-.4.12-.52.11-.11.26-.3.38-.44.13-.15.17-.26.26-.43.08-.17.04-.32-.02-.45-.06-.13-.57-1.42-.8-1.94-.2-.5-.42-.44-.57-.44z"/></svg>
-            <span style="font-size:14px; color:var(--text); font-weight:500; min-width:0;">WhatsApp us</span>
+        <div class="cta-links">
+          <a class="clink wa" href="https://wa.me/27728645452?text=Hi%20MacKeesh%20Tech%20Solutions%2C%20I%27d%20like%20to%20ask%20about%20a%20service." target="_blank" rel="noopener">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="#25D366"><path d="M12.04 2c-5.5 0-9.96 4.46-9.96 9.96 0 1.76.46 3.47 1.33 4.98L2 22l5.2-1.36a9.9 9.9 0 004.84 1.23h.004c5.5 0 9.96-4.46 9.96-9.96 0-2.66-1.04-5.16-2.92-7.04A9.9 9.9 0 0012.04 2zm0 1.67c2.3 0 4.46.9 6.08 2.52a8.56 8.56 0 012.51 6.08c0 4.74-3.86 8.6-8.6 8.6a8.6 8.6 0 01-4.38-1.2l-.31-.19-3.09.81.82-3-.2-.32a8.55 8.55 0 01-1.31-4.58c0-4.74 3.86-8.6 8.6-8.6zm-4.9 4.6c-.17 0-.44.06-.67.32-.23.26-.88.86-.88 2.1 0 1.24.9 2.43 1.03 2.6.13.17 1.75 2.8 4.3 3.82 2.13.85 2.56.68 3.03.64.46-.04 1.5-.61 1.71-1.2.21-.6.21-1.1.15-1.21-.06-.1-.23-.17-.48-.3-.26-.13-1.5-.74-1.74-.82-.23-.09-.4-.13-.57.13-.17.26-.65.82-.8 1-.14.17-.29.18-.54.06-.26-.13-1.08-.4-2.06-1.27-.76-.68-1.28-1.51-1.43-1.77-.14-.26-.01-.4.12-.52.11-.11.26-.3.38-.44.13-.15.17-.26.26-.43.08-.17.04-.32-.02-.45-.06-.13-.57-1.42-.8-1.94-.2-.5-.42-.44-.57-.44z"/></svg>
+            <span style="font-size:14px;font-weight:500;">WhatsApp us</span>
           </a>
-          <a href="tel:+27728645452" style="display:flex; align-items:center; gap:12px; padding:13px 18px; border-radius:12px; background:rgba(5,215,255,0.08); border:1px solid rgba(5,215,255,0.3); box-sizing:border-box; width:100%;">
-            <svg width="16" height="16" style="flex-shrink:0;" viewBox="0 0 16 16" fill="none"><path d="M2.5 2.5c0-.5.5-1 1-1h2l1.5 3.5-1.5 1.5a8 8 0 004 4l1.5-1.5 3.5 1.5v2c0 .5-.5 1-1 1C7 13.5 2.5 9 2.5 2.5z" stroke="#05d7ff" stroke-width="1.3" stroke-linejoin="round"/></svg>
-            <span style="font-family:var(--mono); font-size:14px; color:var(--text); min-width:0;">+27 72 864 5452</span>
+          <a class="clink pe" href="tel:+27728645452">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2.5 2.5c0-.5.5-1 1-1h2l1.5 3.5-1.5 1.5a8 8 0 004 4l1.5-1.5 3.5 1.5v2c0 .5-.5 1-1 1C7 13.5 2.5 9 2.5 2.5z" stroke="#05d7ff" stroke-width="1.3" stroke-linejoin="round"/></svg>
+            <span class="m">+27 72 864 5452</span>
           </a>
-          <a href="mailto:mackeeshtechsolutions@gmail.com" style="display:flex; align-items:center; gap:12px; padding:13px 18px; border-radius:12px; background:rgba(5,215,255,0.08); border:1px solid rgba(5,215,255,0.3); box-sizing:border-box; width:100%;">
-            <svg width="16" height="16" style="flex-shrink:0;" viewBox="0 0 16 16" fill="none"><rect x="1.5" y="3" width="13" height="10" rx="1.5" stroke="#05d7ff" stroke-width="1.3"/><path d="M2 4l6 5 6-5" stroke="#05d7ff" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            <span style="font-family:var(--mono); font-size:13.5px; color:var(--text); min-width:0; word-break:break-all; overflow-wrap:anywhere;">mackeeshtechsolutions@gmail.com</span>
+          <a class="clink pe" href="mailto:mackeeshtechsolutions@gmail.com">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="1.5" y="3" width="13" height="10" rx="1.5" stroke="#05d7ff" stroke-width="1.3"/><path d="M2 4l6 5 6-5" stroke="#05d7ff" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span class="mail">mackeeshtechsolutions@gmail.com</span>
           </a>
         </div>
       </div>
     </div>
-  </div>
+  </section>
 
   <!-- ===== FOOTER ===== -->
-  <div style="display:flex; justify-content:center; border-top:1px solid rgba(5,215,255,0.1); padding:0 clamp(16px,5vw,28px);">
-    <div style="width:100%; max-width:1240px; padding:26px 0; display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:10px;">
-      <div style="display:flex; align-items:center; gap:8px;">
-        <img src="logo.png" alt="" style="width:18px; height:18px; object-fit:contain;">
-        <span style="font-size:12px; color:var(--text3);">MacKeesh Tech Solutions · Johannesburg, South Africa</span>
+  <footer class="foot wrap">
+    <div class="inner foot-in">
+      <div class="foot-brand">
+        <img src="logo.png" alt="">
+        <span>MacKeesh Tech Solutions · Johannesburg, South Africa</span>
       </div>
-      <span style="font-family:var(--mono); font-size:11px; color:var(--text3);">Pricing in ZAR · Payment due within 7 days of invoice</span>
+      <span class="foot-note">Pricing in ZAR · Payment due within 7 days of invoice</span>
     </div>
-  </div>
+  </footer>
 
 </div>
 
+<a class="wa-fab" href="https://wa.me/27728645452?text=Hi%20MacKeesh%20Tech%20Solutions%2C%20I%27d%20like%20to%20ask%20about%20a%20service." target="_blank" rel="noopener" aria-label="Chat with us on WhatsApp">
+  <svg width="30" height="30" viewBox="0 0 24 24" fill="#fff"><path d="M12.04 2c-5.5 0-9.96 4.46-9.96 9.96 0 1.76.46 3.47 1.33 4.98L2 22l5.2-1.36a9.9 9.9 0 004.84 1.23h.004c5.5 0 9.96-4.46 9.96-9.96 0-2.66-1.04-5.16-2.92-7.04A9.9 9.9 0 0012.04 2zm0 1.67c2.3 0 4.46.9 6.08 2.52a8.56 8.56 0 012.51 6.08c0 4.74-3.86 8.6-8.6 8.6a8.6 8.6 0 01-4.38-1.2l-.31-.19-3.09.81.82-3-.2-.32a8.55 8.55 0 01-1.31-4.58c0-4.74 3.86-8.6 8.6-8.6zm-4.9 4.6c-.17 0-.44.06-.67.32-.23.26-.88.86-.88 2.1 0 1.24.9 2.43 1.03 2.6.13.17 1.75 2.8 4.3 3.82 2.13.85 2.56.68 3.03.64.46-.04 1.5-.61 1.71-1.2.21-.6.21-1.1.15-1.21-.06-.1-.23-.17-.48-.3-.26-.13-1.5-.74-1.74-.82-.23-.09-.4-.13-.57.13-.17.26-.65.82-.8 1-.14.17-.29.18-.54.06-.26-.13-1.08-.4-2.06-1.27-.76-.68-1.28-1.51-1.43-1.77-.14-.26-.01-.4.12-.52.11-.11.26-.3.38-.44.13-.15.17-.26.26-.43.08-.17.04-.32-.02-.45-.06-.13-.57-1.42-.8-1.94-.2-.5-.42-.44-.57-.44z"/></svg>
+</a>
+
+<script>
+(function(){
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var canHover = window.matchMedia('(hover: hover)').matches;
+  var root = document.documentElement;
+
+  /* nav height -> scroll offset for anchors */
+  var nav = document.getElementById('nav');
+  function setNavH(){ root.style.setProperty('--navh', (nav.offsetHeight + 8) + 'px'); }
+  setNavH();
+  window.addEventListener('resize', setNavH);
+
+  /* smooth anchor scrolling (works even where CSS smooth-scroll is missing) */
+  document.addEventListener('click', function(e){
+    var a = e.target.closest('a[href^="#"]');
+    if(!a) return;
+    var id = a.getAttribute('href').slice(1);
+    var el = id === 'top' ? document.body : document.getElementById(id);
+    if(!el) return;
+    e.preventDefault();
+    var behavior = reduce ? 'auto' : 'smooth';
+    if(id === 'top'){ window.scrollTo({top:0, behavior:behavior}); }
+    else { el.scrollIntoView({behavior:behavior, block:'start'}); }
+    try{ history.replaceState(null,'','#'+id); }catch(_){}
+  });
+
+  /* scroll progress + nav shadow */
+  var bar = document.getElementById('progress');
+  var ticking = false;
+  function onScroll(){
+    if(ticking) return;
+    ticking = true;
+    requestAnimationFrame(function(){
+      var max = document.documentElement.scrollHeight - window.innerHeight;
+      var p = max > 0 ? Math.min(1, window.scrollY / max) : 0;
+      bar.style.transform = 'scaleX(' + p + ')';
+      nav.classList.toggle('scrolled', window.scrollY > 8);
+      ticking = false;
+    });
+  }
+  window.addEventListener('scroll', onScroll, {passive:true});
+  onScroll();
+
+  /* scroll reveal with stagger */
+  document.querySelectorAll('[data-stagger]').forEach(function(p){
+    Array.prototype.forEach.call(p.children, function(c, i){
+      c.classList.add('reveal');
+      c.style.setProperty('--d', (i * 0.09) + 's');
+    });
+  });
+  var reveals = document.querySelectorAll('.reveal');
+  if(reduce || !('IntersectionObserver' in window)){
+    reveals.forEach(function(el){ el.classList.add('in'); });
+  } else {
+    var ro = new IntersectionObserver(function(entries){
+      entries.forEach(function(en){
+        if(en.isIntersecting){ en.target.classList.add('in'); ro.unobserve(en.target); }
+      });
+    }, {threshold:0.12, rootMargin:'0px 0px -6% 0px'});
+    reveals.forEach(function(el){ ro.observe(el); });
+    setTimeout(function(){ reveals.forEach(function(el){ el.classList.add('in'); }); }, 6000);
+  }
+
+  /* scrollspy */
+  var links = {};
+  document.querySelectorAll('a.nl').forEach(function(a){ links[a.getAttribute('href').slice(1)] = a; });
+  if('IntersectionObserver' in window){
+    var so = new IntersectionObserver(function(entries){
+      entries.forEach(function(en){
+        if(en.isIntersecting){
+          Object.keys(links).forEach(function(k){ links[k].classList.toggle('active', k === en.target.id); });
+        }
+      });
+    }, {rootMargin:'-40% 0px -55% 0px'});
+    Object.keys(links).forEach(function(id){ var s = document.getElementById(id); if(s) so.observe(s); });
+  }
+
+  /* count-up stats */
+  var counts = document.querySelectorAll('.count');
+  function fmt(el, v){ el.textContent = (el.dataset.pre || '') + v + (el.dataset.suf || ''); }
+  if(!reduce){
+    counts.forEach(function(el){ fmt(el, 0); });
+    setTimeout(function(){
+      var start = null, dur = 1400;
+      function step(ts){
+        if(start === null) start = ts;
+        var t = Math.min(1, (ts - start) / dur);
+        var eased = 1 - Math.pow(1 - t, 3);
+        counts.forEach(function(el){ fmt(el, Math.round(parseFloat(el.dataset.to) * eased)); });
+        if(t < 1) requestAnimationFrame(step);
+      }
+      requestAnimationFrame(step);
+    }, 450);
+  }
+
+  if(reduce) return;
+
+  /* rotating headline word */
+  var rot = document.getElementById('rot');
+  var words = ['running','secure','fast','working'];
+  var wi = 0;
+  setInterval(function(){
+    if(document.hidden) return;
+    wi = (wi + 1) % words.length;
+    rot.classList.add('out');
+    setTimeout(function(){
+      rot.textContent = words[wi];
+      rot.classList.remove('out');
+      rot.classList.add('pre');
+      void rot.offsetWidth;
+      rot.classList.remove('pre');
+    }, 360);
+  }, 2800);
+
+  /* hero card: spotlight cycling through quick jobs */
+  var jobs = document.querySelectorAll('#jobs .job');
+  var ji = 0;
+  setInterval(function(){
+    if(document.hidden) return;
+    jobs[ji].classList.remove('hot');
+    ji = (ji + 1) % jobs.length;
+    jobs[ji].classList.add('hot');
+  }, 2000);
+
+  /* live tiles: auto-flip in turn, tap to flip on touch */
+  var tiles = Array.prototype.slice.call(document.querySelectorAll('#tiles .tile'));
+  var servicesVisible = false;
+  if('IntersectionObserver' in window){
+    new IntersectionObserver(function(en){ servicesVisible = en[0].isIntersecting; }, {threshold:0.2})
+      .observe(document.getElementById('tiles'));
+  } else { servicesVisible = true; }
+
+  tiles.forEach(function(t){
+    t.addEventListener('click', function(e){
+      if(e.target.closest('a') || canHover) return;
+      var on = !t.classList.contains('flipped');
+      t.classList.toggle('flipped', on);
+      if(on){ t.dataset.pin = '1'; } else { delete t.dataset.pin; }
+      delete t.dataset.auto;
+    });
+  });
+
+  var ti = 0;
+  setInterval(function(){
+    if(document.hidden || !servicesVisible) return;
+    var t = tiles[ti % tiles.length];
+    ti++;
+    if(t.dataset.pin || t.matches(':hover') || t.classList.contains('flipped')) return;
+    t.classList.add('flipped');
+    t.dataset.auto = '1';
+    setTimeout(function(){
+      if(t.dataset.auto && !t.dataset.pin && !t.matches(':hover')){
+        t.classList.remove('flipped');
+      }
+      delete t.dataset.auto;
+    }, 3400);
+  }, 2300);
+})();
+</script>
 </body>
 </html>
